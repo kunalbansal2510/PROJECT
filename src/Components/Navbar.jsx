@@ -11,12 +11,43 @@ import {
   FaFileAlt,
   FaBars,
   FaTimes,
+  FaChevronLeft,
+  FaChevronRight,
 } from "react-icons/fa";
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [activeLink, setActiveLink] = useState("Home");
   const [isMobile, setIsMobile] = useState(false);
+  const [menuSlideIndex, setMenuSlideIndex] = useState(0);
+
+  // Menu slides data
+  const MENU_SLIDES = [
+    {
+      title: "Navigation",
+      items: [
+        { name: "Home", link: "/", icon: <FaHome className="text-green-400" /> },
+        { name: "About", link: "/about", icon: <FaUser className="text-pink-400" /> },
+        { name: "Resume", link: "/resume", icon: <FaFileAlt className="text-orange-400" /> },
+      ]
+    },
+    {
+      title: "Portfolio",
+      items: [
+        { name: "Portfolio", link: "/portfolio", icon: <FaBriefcase className="text-blue-400" /> },
+        { name: "Contact", link: "/contact", icon: <FaEnvelope className="text-yellow-400" /> },
+        { name: "Blog", link: "/blog", icon: <FaFileAlt className="text-purple-400" /> },
+      ]
+    },
+    {
+      title: "Services",
+      items: [
+        { name: "Web Design", link: "/web-design", icon: <FaHome className="text-red-400" /> },
+        { name: "Development", link: "/development", icon: <FaUser className="text-teal-400" /> },
+        { name: "Consulting", link: "/consulting", icon: <FaBriefcase className="text-indigo-400" /> },
+      ]
+    }
+  ];
 
   // Check if mobile view
   useEffect(() => {
@@ -33,14 +64,6 @@ export default function Navbar() {
     window.addEventListener("resize", checkMobile);
     return () => window.removeEventListener("resize", checkMobile);
   }, []);
-
-  const NAV_MENU = [
-    { name: "Home", link: "/", icon: <FaHome className="text-green-400" /> },
-    { name: "About", link: "/about", icon: <FaUser className="text-pink-400" /> },
-    { name: "Resume", link: "/resume", icon: <FaFileAlt className="text-orange-400" /> },
-    { name: "Portfolio", link: "/portfolio", icon: <FaBriefcase className="text-blue-400" /> },
-    { name: "Contact", link: "/contact", icon: <FaEnvelope className="text-yellow-400" /> },
-  ];
 
   const ICONS_DATA = [
     {
@@ -76,16 +99,76 @@ export default function Navbar() {
     }
   };
 
+  const nextSlide = () => {
+    setMenuSlideIndex((prev) => (prev + 1) % MENU_SLIDES.length);
+  };
+
+  const prevSlide = () => {
+    setMenuSlideIndex((prev) => (prev - 1 + MENU_SLIDES.length) % MENU_SLIDES.length);
+  };
+
   return (
     <>
-      {/* Mobile Toggle Button */}
-      {isMobile && (
+      {/* Enhanced Slide Show Menu Button */}
+      <div className="fixed top-4 left-4 z-50 flex gap-2">
         <button
           onClick={() => setIsOpen(!isOpen)}
-          className="fixed top-4 left-4 z-50 p-3 bg-gray-900 rounded-lg text-white shadow-2xl hover:bg-gray-800 transition-all duration-300"
+          className="p-3 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg text-white shadow-2xl hover:shadow-xl transition-all duration-300 group relative overflow-hidden"
         >
-          {isOpen ? <FaTimes className="text-xl" /> : <FaBars className="text-xl" />}
+          {/* Animated bars */}
+          <div className="relative w-6 h-6">
+            <div className={`absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 transition-all duration-300 ${
+              isOpen ? 'opacity-0 rotate-90' : 'opacity-100'
+            }`}>
+              <FaBars className="text-xl" />
+            </div>
+            <div className={`absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 transition-all duration-300 ${
+              isOpen ? 'opacity-100' : 'opacity-0 -rotate-90'
+            }`}>
+              <FaTimes className="text-xl" />
+            </div>
+          </div>
+          
+          {/* Ripple effect */}
+          <div className="absolute inset-0 bg-white opacity-0 group-hover:opacity-10 transition-opacity duration-300 rounded-lg"></div>
         </button>
+
+        {/* Slide Navigation Buttons */}
+        {isOpen && (
+          <div className="flex gap-1">
+            <button
+              onClick={prevSlide}
+              className="p-3 bg-gray-800 rounded-lg text-white shadow-lg hover:bg-gray-700 transition-all duration-300 hover:scale-105"
+              title="Previous Menu"
+            >
+              <FaChevronLeft className="text-sm" />
+            </button>
+            <button
+              onClick={nextSlide}
+              className="p-3 bg-gray-800 rounded-lg text-white shadow-lg hover:bg-gray-700 transition-all duration-300 hover:scale-105"
+              title="Next Menu"
+            >
+              <FaChevronRight className="text-sm" />
+            </button>
+          </div>
+        )}
+      </div>
+
+      {/* Slide Indicators */}
+      {isOpen && (
+        <div className="fixed top-20 left-4 z-50 flex gap-1">
+          {MENU_SLIDES.map((_, index) => (
+            <button
+              key={index}
+              onClick={() => setMenuSlideIndex(index)}
+              className={`w-2 h-2 rounded-full transition-all duration-300 ${
+                menuSlideIndex === index 
+                  ? 'bg-blue-400 scale-125' 
+                  : 'bg-gray-600 hover:bg-gray-400'
+              }`}
+            />
+          ))}
+        </div>
       )}
 
       {/* Overlay for mobile */}
@@ -96,7 +179,7 @@ export default function Navbar() {
         />
       )}
 
-      {/* Navbar */}
+      {/* Navbar with Slide Content */}
       <aside
         className={`fixed top-0 left-0 h-full w-64 bg-gray-900 text-white flex flex-col justify-between py-8 px-6 shadow-2xl z-40 transition-all duration-500 ease-in-out ${
           isOpen ? "translate-x-0" : "-translate-x-full"
@@ -104,7 +187,7 @@ export default function Navbar() {
       >
         {/* Profile Section */}
         <div className="text-center mb-8">
-          <div className="w-24 h-24 mx-auto mb-4 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 p-1 shadow-lg">
+          <div className="w-24 h-24 mx-auto mb-4 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 p-1 shadow-lg animate-pulse-slow">
             <div className="w-full h-full rounded-full bg-gray-800 flex items-center justify-center text-white text-2xl font-bold">
               KB
             </div>
@@ -115,67 +198,88 @@ export default function Navbar() {
           <p className="text-gray-400 text-sm mt-2">Full Stack Developer</p>
         </div>
 
-        {/* Navigation Menu */}
-        <nav className="flex-1">
-          <ul className="space-y-3">
-            {NAV_MENU.map(({ name, link, icon }, index) => (
-              <li key={index}>
-                <a
-                  href={link}
-                  onClick={() => handleLinkClick(name)}
-                  className={`flex items-center gap-4 p-3 rounded-lg transition-all duration-300 group relative overflow-hidden ${
-                    activeLink === name
-                      ? "bg-blue-600 text-white shadow-lg scale-105"
-                      : "hover:bg-gray-800 hover:text-cyan-400"
-                  }`}
-                >
-                  {/* Animated Background */}
-                  <div
-                    className={`absolute inset-0 bg-gradient-to-r from-blue-600 to-purple-600 transition-transform duration-300 ${
-                      activeLink === name ? "scale-100" : "scale-0 group-hover:scale-100"
-                    }`}
-                    style={{ zIndex: -1 }}
-                  />
-                  
-                  {/* Icon with bounce animation */}
-                  <div
-                    className={`transition-transform duration-300 ${
-                      activeLink === name ? "scale-110" : "group-hover:scale-110"
-                    }`}
-                  >
-                    {icon}
-                  </div>
-                  
-                  {/* Text with slide animation */}
-                  <span
-                    className={`font-medium transition-all duration-300 ${
-                      activeLink === name ? "translate-x-1" : "group-hover:translate-x-1"
-                    }`}
-                  >
-                    {name}
-                  </span>
+        {/* Slide Show Menu Content */}
+        <div className="flex-1 overflow-hidden">
+          <div 
+            className="flex transition-transform duration-500 ease-in-out"
+            style={{ transform: `translateX(-${menuSlideIndex * 100}%)` }}
+          >
+            {MENU_SLIDES.map((slide, slideIndex) => (
+              <div key={slideIndex} className="w-full flex-shrink-0 px-2">
+                <h3 className="text-lg font-bold text-center mb-6 text-cyan-400 border-b border-gray-700 pb-2">
+                  {slide.title}
+                </h3>
+                
+                <nav>
+                  <ul className="space-y-3">
+                    {slide.items.map(({ name, link, icon }, index) => (
+                      <li key={index}>
+                        <a
+                          href={link}
+                          onClick={() => handleLinkClick(name)}
+                          className={`flex items-center gap-4 p-3 rounded-lg transition-all duration-300 group relative overflow-hidden ${
+                            activeLink === name
+                              ? "bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg scale-105"
+                              : "hover:bg-gray-800 hover:text-cyan-400"
+                          }`}
+                        >
+                          {/* Icon with bounce animation */}
+                          <div
+                            className={`transition-transform duration-300 ${
+                              activeLink === name ? "scale-110" : "group-hover:scale-110"
+                            }`}
+                          >
+                            {icon}
+                          </div>
+                          
+                          {/* Text with slide animation */}
+                          <span
+                            className={`font-medium transition-all duration-300 ${
+                              activeLink === name ? "translate-x-1" : "group-hover:translate-x-1"
+                            }`}
+                          >
+                            {name}
+                          </span>
 
-                  {/* Active indicator dot */}
-                  {activeLink === name && (
-                    <div className="absolute right-3 w-2 h-2 bg-white rounded-full animate-pulse" />
-                  )}
-                </a>
-              </li>
+                          {/* Active indicator */}
+                          {activeLink === name && (
+                            <div className="absolute right-3 w-2 h-2 bg-white rounded-full animate-ping" />
+                          )}
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                </nav>
+              </div>
             ))}
-          </ul>
-        </nav>
+          </div>
+        </div>
+
+        {/* Slide Progress */}
+        <div className="flex justify-center gap-2 mt-4">
+          {MENU_SLIDES.map((_, index) => (
+            <div
+              key={index}
+              className={`h-1 rounded-full transition-all duration-300 ${
+                menuSlideIndex === index 
+                  ? 'bg-blue-400 w-8' 
+                  : 'bg-gray-600 w-2 hover:bg-gray-400'
+              }`}
+            />
+          ))}
+        </div>
 
         {/* Social Icons */}
         <div className="mt-8">
           <p className="text-gray-400 text-sm text-center mb-4">Follow me on</p>
-          <div className="flex justify-center gap-4 text-xl">
+          <div className="flex justify-center gap-3 text-xl">
             {ICONS_DATA.map((item, index) => (
               <a
                 href={item.link}
                 target="_blank"
                 rel="noopener noreferrer"
                 key={index}
-                className={`${item.css} transition-all duration-300 hover:scale-125 p-2 rounded-full bg-gray-800 hover:bg-gray-700`}
+                className={`${item.css} transition-all duration-300 hover:scale-125 p-2 rounded-full bg-gray-800 hover:bg-gray-700 transform hover:rotate-12`}
               >
                 {item.icon}
               </a>
@@ -186,13 +290,21 @@ export default function Navbar() {
         {/* Footer */}
         <div className="text-center mt-6 pt-4 border-t border-gray-700">
           <p className="text-gray-400 text-xs">
-            © 2024 Kunal Bansal
+            Slide {menuSlideIndex + 1} of {MENU_SLIDES.length}
           </p>
         </div>
       </aside>
 
-      {/* Main content area adjustment */}
-      {!isMobile && <div className="ml-64"></div>}
+      {/* Custom CSS for slow pulse animation */}
+      <style jsx>{`
+        @keyframes pulse-slow {
+          0%, 100% { transform: scale(1); }
+          50% { transform: scale(1.02); }
+        }
+        .animate-pulse-slow {
+          animation: pulse-slow 3s ease-in-out infinite;
+        }
+      `}</style>
     </>
   );
 }
