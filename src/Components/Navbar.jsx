@@ -179,13 +179,11 @@ export default function Navbar() {
         />
       )}
 
-      {/* Navbar with Slide Content */}
       <aside
         className={`fixed top-0 left-0 h-full w-64 bg-gray-900 text-white flex flex-col justify-between py-8 px-6 shadow-2xl z-40 transition-all duration-500 ease-in-out ${
           isOpen ? "translate-x-0" : "-translate-x-full"
         } ${!isMobile ? "translate-x-0" : ""}`}
       >
-        {/* Profile Section */}
         <div className="text-center mb-8">
           <div className="w-24 h-24 mx-auto mb-4 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 p-1 shadow-lg animate-pulse-slow">
             <div className="w-full h-full rounded-full bg-gray-800 flex items-center justify-center text-white text-2xl font-bold">
@@ -198,7 +196,6 @@ export default function Navbar() {
           <p className="text-gray-400 text-sm mt-2">Full Stack Developer</p>
         </div>
 
-        {/* Slide Show Menu Content */}
         <div className="flex-1 overflow-hidden">
           <div 
             className="flex transition-transform duration-500 ease-in-out"
@@ -223,7 +220,6 @@ export default function Navbar() {
                               : "hover:bg-gray-800 hover:text-cyan-400"
                           }`}
                         >
-                          {/* Icon with bounce animation */}
                           <div
                             className={`transition-transform duration-300 ${
                               activeLink === name ? "scale-110" : "group-hover:scale-110"
@@ -232,8 +228,7 @@ export default function Navbar() {
                             {icon}
                           </div>
                           
-                          {/* Text with slide animation */}
-                          <span
+                         <span
                             className={`font-medium transition-all duration-300 ${
                               activeLink === name ? "translate-x-1" : "group-hover:translate-x-1"
                             }`}
@@ -241,7 +236,6 @@ export default function Navbar() {
                             {name}
                           </span>
 
-                          {/* Active indicator */}
                           {activeLink === name && (
                             <div className="absolute right-3 w-2 h-2 bg-white rounded-full animate-ping" />
                           )}
@@ -269,7 +263,6 @@ export default function Navbar() {
           ))}
         </div>
 
-        {/* Social Icons */}
         <div className="mt-8">
           <p className="text-gray-400 text-sm text-center mb-4">Follow me on</p>
           <div className="flex justify-center gap-3 text-xl">
@@ -287,7 +280,6 @@ export default function Navbar() {
           </div>
         </div>
 
-        {/* Footer */}
         <div className="text-center mt-6 pt-4 border-t border-gray-700">
           <p className="text-gray-400 text-xs">
             Slide {menuSlideIndex + 1} of {MENU_SLIDES.length}
@@ -295,7 +287,6 @@ export default function Navbar() {
         </div>
       </aside>
 
-      {/* Custom CSS for slow pulse animation */}
       <style jsx>{`
         @keyframes pulse-slow {
           0%, 100% { transform: scale(1); }
