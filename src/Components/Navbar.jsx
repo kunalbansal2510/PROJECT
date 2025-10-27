@@ -1,401 +1,301 @@
-import { useState, useEffect, useRef } from "react";
-import { FaExternalLinkAlt, FaGithub, FaFilter, FaTimes } from "react-icons/fa";
+import { useState, useEffect } from "react";
+import {
+  FaFacebook,
+  FaInstagramSquare,
+  FaLinkedin,
+  FaGithub,
+  FaHome,
+  FaUser,
+  FaBriefcase,
+  FaEnvelope,
+  FaFileAlt,
+  FaBars,
+  FaTimes,
+  FaChevronLeft,
+  FaChevronRight,
+} from "react-icons/fa";
 
-export default function Portfolio() {
-  const [activeFilter, setActiveFilter] = useState("all");
-  const [selectedProject, setSelectedProject] = useState(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isVisible, setIsVisible] = useState(false);
+export default function Navbar() {
+  const [isOpen, setIsOpen] = useState(false);
+  const [activeLink, setActiveLink] = useState("Home");
+  const [isMobile, setIsMobile] = useState(false);
+  const [menuSlideIndex, setMenuSlideIndex] = useState(0);
 
-  const portfolioRef = useRef(null);
-
-  // Portfolio data with images
-  const PORTFOLIO_ITEMS = [
+  // Menu slides data
+  const MENU_SLIDES = [
     {
-      id: 1,
-      title: "E-Commerce Platform",
-      category: "web",
-      image: "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=500&h=400&fit=crop",
-      description: "Full-stack e-commerce solution with React, Node.js, and MongoDB",
-      technologies: ["React", "Node.js", "MongoDB", "Stripe"],
-      liveLink: "https://example.com",
-      githubLink: "https://github.com",
-      featured: true
+      title: "Navigation",
+      items: [
+        { name: "Home", link: "/", icon: <FaHome className="text-green-400" /> },
+        { name: "About", link: "/about", icon: <FaUser className="text-pink-400" /> },
+        { name: "Resume", link: "/resume", icon: <FaFileAlt className="text-orange-400" /> },
+      ]
     },
     {
-      id: 2,
-      title: "Mobile Fitness App",
-      category: "mobile",
-      image: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=500&h=400&fit=crop",
-      description: "Cross-platform fitness tracking application with real-time analytics",
-      technologies: ["React Native", "Firebase", "Redux"],
-      liveLink: "https://example.com",
-      githubLink: "https://github.com",
-      featured: true
+      title: "Portfolio",
+      items: [
+        { name: "Portfolio", link: "/portfolio", icon: <FaBriefcase className="text-blue-400" /> },
+        { name: "Contact", link: "/contact", icon: <FaEnvelope className="text-yellow-400" /> },
+        { name: "Blog", link: "/blog", icon: <FaFileAlt className="text-purple-400" /> },
+      ]
     },
     {
-      id: 3,
-      title: "Dashboard Analytics",
-      category: "web",
-      image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=500&h=400&fit=crop",
-      description: "Real-time analytics dashboard with interactive charts and reports",
-      technologies: ["Vue.js", "D3.js", "Express", "PostgreSQL"],
-      liveLink: "https://example.com",
-      githubLink: "https://github.com",
-      featured: false
-    },
-    {
-      id: 4,
-      title: "Social Media App",
-      category: "mobile",
-      image: "https://images.unsplash.com/photo-1611162617474-5b21e879e113?w=500&h=400&fit=crop",
-      description: "Social networking platform with real-time messaging and media sharing",
-      technologies: ["Flutter", "Node.js", "Socket.io", "AWS"],
-      liveLink: "https://example.com",
-      githubLink: "https://github.com",
-      featured: false
-    },
-    {
-      id: 5,
-      title: "AI Chatbot",
-      category: "ai",
-      image: "https://images.unsplash.com/photo-1531746790731-6c087fecd65a?w=500&h=400&fit=crop",
-      description: "Intelligent chatbot using natural language processing and machine learning",
-      technologies: ["Python", "TensorFlow", "React", "FastAPI"],
-      liveLink: "https://example.com",
-      githubLink: "https://github.com",
-      featured: true
-    },
-    {
-      id: 6,
-      title: "Portfolio Website",
-      category: "web",
-      image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=500&h=400&fit=crop",
-      description: "Modern portfolio website with smooth animations and responsive design",
-      technologies: ["Next.js", "Tailwind CSS", "Framer Motion"],
-      liveLink: "https://example.com",
-      githubLink: "https://github.com",
-      featured: false
+      title: "Services",
+      items: [
+        { name: "Web Design", link: "/web-design", icon: <FaHome className="text-red-400" /> },
+        { name: "Development", link: "/development", icon: <FaUser className="text-teal-400" /> },
+        { name: "Consulting", link: "/consulting", icon: <FaBriefcase className="text-indigo-400" /> },
+      ]
     }
   ];
 
-  const FILTERS = [
-    { key: "all", label: "All Projects" },
-    { key: "web", label: "Web Development" },
-    { key: "mobile", label: "Mobile Apps" },
-    { key: "ai", label: "AI & ML" }
-  ];
-
-  const filteredItems = activeFilter === "all" 
-    ? PORTFOLIO_ITEMS 
-    : PORTFOLIO_ITEMS.filter(item => item.category === activeFilter);
-
-  // Intersection Observer for animation
+  // Check if mobile view
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsVisible(true);
-        }
-      },
-      { threshold: 0.1 }
-    );
-
-    if (portfolioRef.current) {
-      observer.observe(portfolioRef.current);
-    }
-
-    return () => {
-      if (portfolioRef.current) {
-        observer.unobserve(portfolioRef.current);
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+      if (window.innerWidth >= 768) {
+        setIsOpen(true);
+      } else {
+        setIsOpen(false);
       }
     };
+
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
   }, []);
 
-  const openProjectModal = (project) => {
-    setSelectedProject(project);
-    setIsModalOpen(true);
-    document.body.style.overflow = "hidden";
+  const ICONS_DATA = [
+    {
+      name: "Facebook",
+      icon: <FaFacebook />,
+      link: "https://facebook.com",
+      css: "text-blue-600 hover:text-blue-700",
+    },
+    {
+      name: "Instagram",
+      icon: <FaInstagramSquare />,
+      link: "https://www.instagram.com/official_kunal_bansal/",
+      css: "text-pink-600 hover:text-pink-700",
+    },
+    {
+      name: "Linkedin",
+      icon: <FaLinkedin />,
+      link: "https://linkedin.com",
+      css: "text-blue-500 hover:text-blue-600",
+    },
+    {
+      name: "Github",
+      icon: <FaGithub />,
+      link: "https://github.com",
+      css: "text-gray-300 hover:text-white",
+    },
+  ];
+
+  const handleLinkClick = (name) => {
+    setActiveLink(name);
+    if (isMobile) {
+      setIsOpen(false);
+    }
   };
 
-  const closeProjectModal = () => {
-    setIsModalOpen(false);
-    setSelectedProject(null);
-    document.body.style.overflow = "unset";
+  const nextSlide = () => {
+    setMenuSlideIndex((prev) => (prev + 1) % MENU_SLIDES.length);
+  };
+
+  const prevSlide = () => {
+    setMenuSlideIndex((prev) => (prev - 1 + MENU_SLIDES.length) % MENU_SLIDES.length);
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 to-black py-20 px-4" ref={portfolioRef}>
-      <div className="max-w-7xl mx-auto">
-        {/* Header */}
-        <div className={`text-center mb-16 transition-all duration-1000 ${
-          isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
-        }`}>
-          <h1 className="text-5xl md:text-6xl font-bold text-white mb-6">
-            My <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-600">Portfolio</span>
-          </h1>
-          <p className="text-xl text-gray-400 max-w-3xl mx-auto">
-            A collection of my latest projects and creative works. Each project represents 
-            a unique challenge and learning opportunity.
-          </p>
-        </div>
-
-        {/* Filters */}
-        <div className={`flex flex-wrap justify-center gap-4 mb-12 transition-all duration-1000 delay-300 ${
-          isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
-        }`}>
-          {FILTERS.map((filter) => (
-            <button
-              key={filter.key}
-              onClick={() => setActiveFilter(filter.key)}
-              className={`px-6 py-3 rounded-full font-semibold transition-all duration-300 flex items-center gap-2 ${
-                activeFilter === filter.key
-                  ? "bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg scale-105"
-                  : "bg-gray-800 text-gray-300 hover:bg-gray-700 hover:text-white"
-              }`}
-            >
-              <FaFilter className="text-sm" />
-              {filter.label}
-            </button>
-          ))}
-        </div>
-
-        {/* Portfolio Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {filteredItems.map((project, index) => (
-            <div
-              key={project.id}
-              className={`group relative bg-gray-800 rounded-2xl overflow-hidden shadow-2xl transition-all duration-700 hover:scale-105 hover:shadow-2xl ${
-                isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
-              }`}
-              style={{
-                transitionDelay: `${index * 100}ms`,
-                animation: isVisible ? `fadeInUp 0.6s ease-out ${index * 0.1}s both` : 'none'
-              }}
-            >
-              {/* Featured Badge */}
-              {project.featured && (
-                <div className="absolute top-4 left-4 z-10">
-                  <span className="bg-gradient-to-r from-yellow-500 to-orange-500 text-white px-3 py-1 rounded-full text-sm font-bold shadow-lg">
-                    Featured
-                  </span>
-                </div>
-              )}
-
-              {/* Image Container */}
-              <div className="relative overflow-hidden h-64">
-                <img
-                  src={project.image}
-                  alt={project.title}
-                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                />
-                
-                {/* Overlay */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-60 group-hover:opacity-20 transition-opacity duration-300" />
-                
-                {/* Quick Actions */}
-                <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 bg-black bg-opacity-70">
-                  <div className="flex gap-4">
-                    <button
-                      onClick={() => openProjectModal(project)}
-                      className="bg-white text-gray-900 p-3 rounded-full hover:scale-110 transition-transform duration-300 shadow-lg"
-                    >
-                      <FaExternalLinkAlt className="text-lg" />
-                    </button>
-                    <a
-                      href={project.githubLink}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="bg-gray-800 text-white p-3 rounded-full hover:scale-110 transition-transform duration-300 shadow-lg"
-                    >
-                      <FaGithub className="text-lg" />
-                    </a>
-                  </div>
-                </div>
-              </div>
-
-              {/* Content */}
-              <div className="p-6">
-                <h3 className="text-xl font-bold text-white mb-2 group-hover:text-blue-400 transition-colors duration-300">
-                  {project.title}
-                </h3>
-                <p className="text-gray-400 text-sm mb-4 line-clamp-2">
-                  {project.description}
-                </p>
-                
-                {/* Technologies */}
-                <div className="flex flex-wrap gap-2 mb-4">
-                  {project.technologies.slice(0, 3).map((tech, techIndex) => (
-                    <span
-                      key={techIndex}
-                      className="px-3 py-1 bg-gray-700 text-gray-300 rounded-full text-xs font-medium"
-                    >
-                      {tech}
-                    </span>
-                  ))}
-                  {project.technologies.length > 3 && (
-                    <span className="px-3 py-1 bg-gray-700 text-gray-300 rounded-full text-xs font-medium">
-                      +{project.technologies.length - 3}
-                    </span>
-                  )}
-                </div>
-
-                {/* Actions */}
-                <div className="flex justify-between items-center">
-                  <button
-                    onClick={() => openProjectModal(project)}
-                    className="text-blue-400 hover:text-blue-300 font-semibold text-sm flex items-center gap-2 transition-all duration-300 group"
-                  >
-                    View Details
-                    <FaExternalLinkAlt className="text-xs group-hover:translate-x-1 transition-transform duration-300" />
-                  </button>
-                  <a
-                    href={project.liveLink}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="px-4 py-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg text-sm font-semibold hover:shadow-lg transition-all duration-300 hover:scale-105"
-                  >
-                    Live Demo
-                  </a>
-                </div>
-              </div>
+    <>
+      {/* Enhanced Slide Show Menu Button */}
+      <div className="fixed top-4 left-4 z-50 flex gap-2">
+        <button
+          onClick={() => setIsOpen(!isOpen)}
+          className="p-3 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg text-white shadow-2xl hover:shadow-xl transition-all duration-300 group relative overflow-hidden"
+        >
+          {/* Animated bars */}
+          <div className="relative w-6 h-6">
+            <div className={`absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 transition-all duration-300 ${
+              isOpen ? 'opacity-0 rotate-90' : 'opacity-100'
+            }`}>
+              <FaBars className="text-xl" />
             </div>
-          ))}
-        </div>
+            <div className={`absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 transition-all duration-300 ${
+              isOpen ? 'opacity-100' : 'opacity-0 -rotate-90'
+            }`}>
+              <FaTimes className="text-xl" />
+            </div>
+          </div>
+          
+          {/* Ripple effect */}
+          <div className="absolute inset-0 bg-white opacity-0 group-hover:opacity-10 transition-opacity duration-300 rounded-lg"></div>
+        </button>
 
-        {/* Empty State */}
-        {filteredItems.length === 0 && (
-          <div className="text-center py-16">
-            <div className="text-6xl mb-4">🔍</div>
-            <h3 className="text-2xl font-bold text-white mb-2">No projects found</h3>
-            <p className="text-gray-400">Try selecting a different filter category</p>
+        {/* Slide Navigation Buttons */}
+        {isOpen && (
+          <div className="flex gap-1">
+            <button
+              onClick={prevSlide}
+              className="p-3 bg-gray-800 rounded-lg text-white shadow-lg hover:bg-gray-700 transition-all duration-300 hover:scale-105"
+              title="Previous Menu"
+            >
+              <FaChevronLeft className="text-sm" />
+            </button>
+            <button
+              onClick={nextSlide}
+              className="p-3 bg-gray-800 rounded-lg text-white shadow-lg hover:bg-gray-700 transition-all duration-300 hover:scale-105"
+              title="Next Menu"
+            >
+              <FaChevronRight className="text-sm" />
+            </button>
           </div>
         )}
       </div>
 
-      {/* Project Modal */}
-      {isModalOpen && selectedProject && (
-        <div className="fixed inset-0 bg-black bg-opacity-90 flex items-center justify-center p-4 z-50 animate-fadeIn">
-          <div className="bg-gray-800 rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto animate-scaleIn">
-            {/* Modal Header */}
-            <div className="relative">
-              <img
-                src={selectedProject.image}
-                alt={selectedProject.title}
-                className="w-full h-64 md:h-80 object-cover"
-              />
-              <button
-                onClick={closeProjectModal}
-                className="absolute top-4 right-4 bg-black bg-opacity-50 text-white p-3 rounded-full hover:bg-opacity-70 transition-all duration-300 hover:scale-110"
-              >
-                <FaTimes className="text-lg" />
-              </button>
-              {selectedProject.featured && (
-                <div className="absolute top-4 left-4">
-                  <span className="bg-gradient-to-r from-yellow-500 to-orange-500 text-white px-4 py-2 rounded-full text-sm font-bold shadow-lg">
-                    Featured Project
-                  </span>
-                </div>
-              )}
-            </div>
-
-            {/* Modal Content */}
-            <div className="p-8">
-              <h2 className="text-3xl font-bold text-white mb-4">
-                {selectedProject.title}
-              </h2>
-              <p className="text-gray-300 text-lg mb-6">
-                {selectedProject.description}
-              </p>
-
-              {/* Technologies */}
-              <div className="mb-8">
-                <h3 className="text-xl font-semibold text-white mb-4">Technologies Used</h3>
-                <div className="flex flex-wrap gap-3">
-                  {selectedProject.technologies.map((tech, index) => (
-                    <span
-                      key={index}
-                      className="px-4 py-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-full text-sm font-medium shadow-lg"
-                    >
-                      {tech}
-                    </span>
-                  ))}
-                </div>
-              </div>
-
-              {/* Project Links */}
-              <div className="flex flex-wrap gap-4">
-                <a
-                  href={selectedProject.liveLink}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-green-600 to-blue-600 text-white rounded-lg font-semibold hover:shadow-lg transition-all duration-300 hover:scale-105"
-                >
-                  <FaExternalLinkAlt />
-                  View Live Demo
-                </a>
-                <a
-                  href={selectedProject.githubLink}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-3 px-6 py-3 bg-gray-700 text-white rounded-lg font-semibold hover:bg-gray-600 transition-all duration-300 hover:scale-105"
-                >
-                  <FaGithub />
-                  Source Code
-                </a>
-              </div>
-            </div>
-          </div>
+      {/* Slide Indicators */}
+      {isOpen && (
+        <div className="fixed top-20 left-4 z-50 flex gap-1">
+          {MENU_SLIDES.map((_, index) => (
+            <button
+              key={index}
+              onClick={() => setMenuSlideIndex(index)}
+              className={`w-2 h-2 rounded-full transition-all duration-300 ${
+                menuSlideIndex === index 
+                  ? 'bg-blue-400 scale-125' 
+                  : 'bg-gray-600 hover:bg-gray-400'
+              }`}
+            />
+          ))}
         </div>
       )}
 
+      {/* Overlay for mobile */}
+      {isMobile && isOpen && (
+        <div
+          className="fixed inset-0 bg-black bg-opacity-50 z-30 transition-opacity duration-300"
+          onClick={() => setIsOpen(false)}
+        />
+      )}
+
+      <aside
+        className={`fixed top-0 left-0 h-full w-64 bg-gray-900 text-white flex flex-col justify-between py-8 px-6 shadow-2xl z-40 transition-all duration-500 ease-in-out ${
+          isOpen ? "translate-x-0" : "-translate-x-full"
+        } ${!isMobile ? "translate-x-0" : ""}`}
+      >
+        <div className="text-center mb-8">
+          <div className="w-24 h-24 mx-auto mb-4 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 p-1 shadow-lg animate-pulse-slow">
+            <div className="w-full h-full rounded-full bg-gray-800 flex items-center justify-center text-white text-2xl font-bold">
+              KB
+            </div>
+          </div>
+          <h1 className="text-2xl font-bold hover:text-yellow-400 cursor-pointer transition duration-300">
+            Kunal<span className="text-blue-400">Bansal</span>
+          </h1>
+          <p className="text-gray-400 text-sm mt-2">Full Stack Developer</p>
+        </div>
+
+        <div className="flex-1 overflow-hidden">
+          <div 
+            className="flex transition-transform duration-500 ease-in-out"
+            style={{ transform: `translateX(-${menuSlideIndex * 100}%)` }}
+          >
+            {MENU_SLIDES.map((slide, slideIndex) => (
+              <div key={slideIndex} className="w-full flex-shrink-0 px-2">
+                <h3 className="text-lg font-bold text-center mb-6 text-cyan-400 border-b border-gray-700 pb-2">
+                  {slide.title}
+                </h3>
+                
+                <nav>
+                  <ul className="space-y-3">
+                    {slide.items.map(({ name, link, icon }, index) => (
+                      <li key={index}>
+                        <a
+                          href={link}
+                          onClick={() => handleLinkClick(name)}
+                          className={`flex items-center gap-4 p-3 rounded-lg transition-all duration-300 group relative overflow-hidden ${
+                            activeLink === name
+                              ? "bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg scale-105"
+                              : "hover:bg-gray-800 hover:text-cyan-400"
+                          }`}
+                        >
+                          <div
+                            className={`transition-transform duration-300 ${
+                              activeLink === name ? "scale-110" : "group-hover:scale-110"
+                            }`}
+                          >
+                            {icon}
+                          </div>
+                          
+                         <span
+                            className={`font-medium transition-all duration-300 ${
+                              activeLink === name ? "translate-x-1" : "group-hover:translate-x-1"
+                            }`}
+                          >
+                            {name}
+                          </span>
+
+                          {activeLink === name && (
+                            <div className="absolute right-3 w-2 h-2 bg-white rounded-full animate-ping" />
+                          )}
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                </nav>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Slide Progress */}
+        <div className="flex justify-center gap-2 mt-4">
+          {MENU_SLIDES.map((_, index) => (
+            <div
+              key={index}
+              className={`h-1 rounded-full transition-all duration-300 ${
+                menuSlideIndex === index 
+                  ? 'bg-blue-400 w-8' 
+                  : 'bg-gray-600 w-2 hover:bg-gray-400'
+              }`}
+            />
+          ))}
+        </div>
+
+        <div className="mt-8">
+          <p className="text-gray-400 text-sm text-center mb-4">Follow me on</p>
+          <div className="flex justify-center gap-3 text-xl">
+            {ICONS_DATA.map((item, index) => (
+              <a
+                href={item.link}
+                target="_blank"
+                rel="noopener noreferrer"
+                key={index}
+                className={`${item.css} transition-all duration-300 hover:scale-125 p-2 rounded-full bg-gray-800 hover:bg-gray-700 transform hover:rotate-12`}
+              >
+                {item.icon}
+              </a>
+            ))}
+          </div>
+        </div>
+
+        <div className="text-center mt-6 pt-4 border-t border-gray-700">
+          <p className="text-gray-400 text-xs">
+            Slide {menuSlideIndex + 1} of {MENU_SLIDES.length}
+          </p>
+        </div>
+      </aside>
+
       <style jsx>{`
-        @keyframes fadeInUp {
-          from {
-            opacity: 0;
-            transform: translateY(30px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
+        @keyframes pulse-slow {
+          0%, 100% { transform: scale(1); }
+          50% { transform: scale(1.02); }
         }
-        
-        @keyframes fadeIn {
-          from {
-            opacity: 0;
-          }
-          to {
-            opacity: 1;
-          }
-        }
-        
-        @keyframes scaleIn {
-          from {
-            opacity: 0;
-            transform: scale(0.9);
-          }
-          to {
-            opacity: 1;
-            transform: scale(1);
-          }
-        }
-        
-        .animate-fadeIn {
-          animation: fadeIn 0.3s ease-out;
-        }
-        
-        .animate-scaleIn {
-          animation: scaleIn 0.3s ease-out;
-        }
-        
-        .line-clamp-2 {
-          display: -webkit-box;
-          -webkit-line-clamp: 2;
-          -webkit-box-orient: vertical;
-          overflow: hidden;
+        .animate-pulse-slow {
+          animation: pulse-slow 3s ease-in-out infinite;
         }
       `}</style>
-    </div>
+    </>
   );
 }
