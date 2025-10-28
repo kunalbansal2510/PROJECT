@@ -62,7 +62,7 @@ export default function Portfolio() {
             <div className={`transition-all duration-700 delay-700 ${
               isVisible ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-10'
             }`}>
-              <h3 className="text-2xl font-bold mb-4">Hello, I'm KB</h3>
+              <h3 className="text-2xl font-bold mb-4">Hello, I'm 😊KB</h3>
               <p className="text-gray-300 mb-6 text-lg">
                 Passionate full-stack developer with 5+ years of experience creating 
                 digital solutions that make a difference. I love turning complex 
