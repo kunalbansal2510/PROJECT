@@ -16,7 +16,7 @@ export default function Portfolio() {
   const skills = [
     { name: "React", level: 90 },
     { name: "JavaScript", level: 85 },
-    { name: "CSS/Tailwind", level: 90 },
+    { name: "CSS/Tailwind", level: 80 },
   ];
 
   return (

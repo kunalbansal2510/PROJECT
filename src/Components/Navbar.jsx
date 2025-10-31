@@ -16,10 +16,10 @@ import {
 } from "react-icons/fa";
 
 export default function Navbar() {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState('false');
   const [activeLink, setActiveLink] = useState("Home");
-  const [isMobile, setIsMobile] = useState(false);
-  const [menuSlideIndex, setMenuSlideIndex] = useState(0);
+  const [isMobile, setIsMobile] = useState('false');
+  const [menuSlideIndex, setMenuSlideIndex] = useState('false');
 
   // Menu slides data
   const MENU_SLIDES = [
@@ -55,9 +55,7 @@ export default function Navbar() {
       setIsMobile(window.innerWidth < 768);
       if (window.innerWidth >= 768) {
         setIsOpen(true);
-      } else {
-        setIsOpen(false);
-      }
+      } 
     };
 
     checkMobile();
@@ -75,7 +73,7 @@ export default function Navbar() {
     {
       name: "Instagram",
       icon: <FaInstagramSquare />,
-      link: "https://www.instagram.com/official_kunal_bansal/",
+      link: "https://www.instagram.com",
       css: "text-pink-600 hover:text-pink-700",
     },
     {
