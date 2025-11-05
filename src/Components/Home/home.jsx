@@ -56,7 +56,7 @@ export default function Portfolio() {
               <img 
                 src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop&crop=face" 
                 alt="Profile" 
-                className="rounded-2xl shadow-2xl mx-auto hover:scale-105 transition-transform duration-300"
+                className="rounded-2xl shadow-2xl mx-auto hover:scale-100 transition-transform duration-300"
               />
             </div>
             <div className={`transition-all duration-700 delay-700 ${
